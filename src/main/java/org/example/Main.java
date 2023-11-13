@@ -15,7 +15,7 @@ public class Main {
 
             Statement statement = connection.createStatement();
 
-            seedData(statement, 10);
+            printData(statement);
 
         }
         catch (SQLException ex) {
@@ -45,9 +45,22 @@ public class Main {
             String insertQuery = "INSERT INTO AUTHOR VALUES('" + id + "', '" + name + "', '" + bookName + "');";
             int result = statement.executeUpdate(insertQuery);
         }
-
-
         statement.close();
-
     }
-}
+
+    static void printData(Statement statement) throws SQLException {
+
+        String query = "SELECT * FROM AUTHOR";
+
+        ResultSet resultSet = statement.executeQuery(query);
+
+        while(resultSet.next()) {
+            String id = resultSet.getString("ID");
+            String name = resultSet.getString("NAME");
+            String bookName = resultSet.getString("BOOK");
+            System.out.println("ID: " + id);
+            System.out.println(bookName + " - " + name);
+            System.out.println("--------------------------------------");
+        }
+
+    }}
