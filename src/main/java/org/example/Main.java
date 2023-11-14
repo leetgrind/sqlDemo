@@ -9,13 +9,19 @@ public class Main {
     public static void main(String[] args) {
 
         try{
-            Class.forName("org.sqlite.JDBC");
+            Class.forName("org.postgresql.Driver");
             Connection connection =
-                    DriverManager.getConnection("jdbc:sqlite:test.db");
+                    DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres",
+                            "postgres",
+                            "123456"
+                            );
 
-            Statement statement = connection.createStatement();
+            Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_UPDATABLE);
 
             printData(statement);
+
+            deleteById(statement, "6a11b82e-e144-4cc1-b82c-cc2ad7a7da72");
 
         }
         catch (SQLException ex) {
@@ -63,4 +69,38 @@ public class Main {
             System.out.println("--------------------------------------");
         }
 
-    }}
+    }
+
+    static void deleteById(Statement statement, String id) throws SQLException {
+        String createTableQuery = "DELETE FROM AUTHOR WHERE ID='" + id +"'";
+        int result = statement.executeUpdate(createTableQuery);
+        System.out.println("Rows deleted: " + result);
+        statement.close();
+    }
+
+
+
+    static void deleteResultSet(Statement statement, String id) throws SQLException {
+
+        String selectQuery = "SELECT * FROM AUTHOR where id='"+id + "'";
+
+        ResultSet rs = statement.executeQuery(selectQuery);
+
+        System.out.println("Rows : " + rs.getFetchSize());
+
+        while(rs.next()) {
+
+            String dbId = rs.getString("ID");
+            System.out.println("Processing row: " + dbId);
+
+            if(id.equals(dbId)) {
+                rs.deleteRow();
+                System.out.println("Row deleted with ID: " + id);
+                break;
+            }
+        }
+
+        rs.close();
+        statement.close();
+    }
+}

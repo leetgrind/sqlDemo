@@ -11,6 +11,7 @@ repositories {
 
 dependencies {
     implementation("org.xerial:sqlite-jdbc:3.43.2.2")
+    implementation("org.postgresql:postgresql:42.6.0")
     implementation("com.github.javafaker:javafaker:1.0.2")
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
