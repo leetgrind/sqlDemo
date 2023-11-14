@@ -19,9 +19,9 @@ public class Main {
             Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_UPDATABLE);
 
-            printData(statement);
+            insertPreparedStatement(connection);
 
-            deleteById(statement, "6a11b82e-e144-4cc1-b82c-cc2ad7a7da72");
+            printData(statement);
 
         }
         catch (SQLException ex) {
@@ -69,6 +69,22 @@ public class Main {
             System.out.println("--------------------------------------");
         }
 
+    }
+
+    static void insertPreparedStatement(Connection connection) throws SQLException {
+
+        String query = "INSERT INTO AUTHOR VALUES(?, ?, ?);";
+
+        PreparedStatement preparedStatement =
+                connection.prepareStatement(query);
+
+        preparedStatement.setString(1, UUID.randomUUID().toString());
+        preparedStatement.setString(2, "John Doe");
+        preparedStatement.setString(3, "Unnamed Book");
+
+        int result = preparedStatement.executeUpdate();
+        System.out.println("Rows inserted: " + result);
+        preparedStatement.close();
     }
 
     static void deleteById(Statement statement, String id) throws SQLException {
